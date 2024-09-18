@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+            overflow-x: hidden;
+        }
+        /* الخلفية المتحركة */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            z-index: -1;
+            animation: backgroundMove 10s linear infinite;
+            background-size: 200% 200%;
+        }
+        @keyframes backgroundMove {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+        /* الهيدر */
+        header {
+            background-color: rgba(76, 175, 80, 0.8);
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .header-button {
+            background-color: #fff;
+            color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .header-button:hover {
+            background-color: #e0e0e0;
+        }
+        /* محتوى العربة */
+        .cart-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 80px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .cart-item:hover {
+            background-color: #f0f0f0;
+        }
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        .cart-item h3 {
+            margin: 0;
+        }
+        .cart-item p {
+            margin: 5px 0;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-control input {
+            width: 50px;
+            text-align: center;
+            margin: 0 10px;
+        }
+        .quantity-control button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .quantity-control button:hover {
+            background-color: #388E3C;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .cart-summary h2 {
+            margin: 0 0 10px;
+        }
+        .checkout-button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .checkout-button:hover {
+            background-color: #388E3C;
+        }
+    </style>
+</head>
+<body>
+    <!-- الخلفية المتحركة -->
+    <div class="background-animation"></div>
+
+    <header>
+        <h1>عربة التسوق</h1>
+        <button class="header-button" onclick="window.location.href='index.html'">الصفحة الرئيسية</button>
+    </header>
+
+    <div class="cart-container">
+        <div id="cart-items">
+            <!-- سيتم توليد العناصر ديناميكياً باستخدام JavaScript -->
+        </div>
+        <div class="cart-summary">
+            <h2>ملخص الطلب</h2>
+            <p id="total-price">المجموع: $0.00</p>
+            <button class="checkout-button" onclick="checkout()">إتمام الطلب</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const totalPriceElement = document.getElementById('total-price');
+
+            // بيانات العناصر في العربة (يمكنك استبدالها ببيانات من API)
+            const cartItems = [
+                { id: 1, title: 'فيتامين C', price: 10, quantity: 1, imageUrl: 'https://via.placeholder.com/80' },
+                { id: 2, title: 'فيتامين D', price: 15, quantity: 2, imageUrl: 'https://via.placeholder.com/80' }
+            ];
+
+            let totalPrice = 0;
+
+            // إنشاء العناصر في العربة
+            cartItems.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('cart-item');
+                cartItem.innerHTML = `
+                    <img src="${item.imageUrl}" alt="${item.title}">
+                    <div>
+                        <h3>${item.title}</h3>
+                        <p>سعر الوحدة: $${item.price}</p>
+                        <div class="quantity-control">
+                            <button onclick="changeQuantity(${item.id}, -1)">-</button>
+                            <input type="number" value="${item.quantity}" readonly>
+                            <button onclick="changeQuantity(${item.id}, 1)">+</button>
+                            <button onclick="removeItem(${item.id})">حذف</button>
+                        </div>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            totalPriceElement.textContent = `المجموع: $${totalPrice.toFixed(2)}`;
+        });
+
+        function changeQuantity(itemId, change) {
+            // وظيفة لتغيير كمية العنصر (يمكنك تعديل البيانات هنا)
+            console.log(`تغيير كمية العنصر ${itemId} بمقدار ${change}`);
+            // إعادة تحميل الصفحة لتحديث المحتوى (يمكنك استخدام أسلوب أكثر تفاعلية مثل AJAX)
+            location.reload();
+        }
+
+        function removeItem(itemId) {
+            // وظيفة لحذف العنصر (يمكنك تعديل البيانات هنا)
+            console.log(`حذف العنصر ${itemId}`);
+            // إعادة تحميل الصفحة لتحديث المحتوى (يمكنك استخدام أسلوب أكثر تفاعلية مثل AJAX)
+            location.reload();
+        }
+
+        function checkout() {
+            // وظيفة لتقديم الطلب (يمكنك إضافة المنطق هنا)
+            alert('شكراً لطلبك! سيتم إرسال الفاتورة إلى بريدك الإلكتروني.');
+            // إعادة التوجيه إلى صفحة التأكيد أو الدفع
+            window.location.href = 'thank-you.html'; // أو صفحة الدفع الخاصة بك
+        }
+    </script>
+</body>
+</html>

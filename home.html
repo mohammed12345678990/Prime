@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+    <style>
+        /* تنسيق عام للصفحة */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* تنسيق رأس الصفحة */
+        .header {
+            background: #4CAF50;
+            color: #fff;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        .header:hover {
+            background: #388E3C;
+        }
+
+        .header .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+            display: flex;
+            align-items: center;
+        }
+
+        .header .logo i {
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+
+        .header .logo:hover i {
+            transform: rotate(360deg);
+        }
+
+        .header .search-bar {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .header .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-right: 10px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .header .search-bar input:focus {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .header .search-bar button {
+            padding: 10px 20px;
+            background: #fff;
+            border: none;
+            border-radius: 5px;
+            color: #4CAF50;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .header .search-bar button:hover {
+            background: #e0e0e0;
+            transform: scale(1.1);
+        }
+
+        .header .nav-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header .nav-menu a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .header .nav-menu a:hover {
+            background: #388E3C;
+            color: #fff;
+        }
+
+        .header .cart {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .header .cart .cart-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .header .cart:hover .cart-icon {
+            transform: scale(1.2);
+        }
+
+        .header .cart .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background: #fff;
+            color: #4CAF50;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        /* تنسيق نافذة عربة التسوق */
+        .cart-popup {
+            display: none;
+            position: fixed;
+            top: 20%;
+            right: 10px;
+            width: 300px;
+            background: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            z-index: 1000;
+            padding: 15px;
+        }
+
+        .cart-popup h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .cart-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .cart-popup ul li {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .cart-popup ul li:last-child {
+            border-bottom: none;
+        }
+
+        .cart-popup .empty-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #888;
+        }
+
+        .cart-popup button {
+            display: block;
+            margin: 15px auto 0;
+            padding: 10px 20px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .cart-popup button:hover {
+            background: #388E3C;
+        }
+
+        /* تنسيق شاشة الجوال */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header .search-bar {
+                margin-top: 10px;
+                width: 100%;
+            }
+
+            .header .nav-menu {
+                flex-direction: column;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .header .nav-menu a {
+                padding: 10px;
+                text-align: center;
+                width: 100%;
+            }
+        }
+          /* تنسيق قسم العروض المتحركة */
+          .offers {
+            position: relative;
+            width: 80%;
+            max-width: 1200px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .offers .slides {
+            display: flex;
+            transition: transform 1s ease-in-out;
+        }
+
+        .offers .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .offers .slide img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+            transition: transform 0.5s ease;
+        }
+
+        .offers .slide img:hover {
+            transform: scale(1.05);
+        }
+
+        .offers .slide .caption {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* تأثيرات لتحسين عرض الشرائح */
+        .offers .slides::before, .offers .slides::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            transform: translateY(-50%);
+            transition: background 0.3s;
+        }
+
+        .offers .slides::before {
+            content: '‹';
+            left: 10px;
+        }
+
+        .offers .slides::after {
+            content: '›';
+            right: 10px;
+        }
+
+        .offers .slides:hover::before, .offers .slides:hover::after {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* تنسيق شاشة الجوال */
+        @media (max-width: 768px) {
+            .offers .slide .caption {
+                font-size: 1rem;
+                bottom: 10px;
+                left: 10px;
+                padding: 10px;
+            }
+
+            .offers .slides::before, .offers .slides::after {
+                width: 40px;
+                height: 40px;
+                font-size: 1.5rem;
+            }
+        }
+                /* تنسيق حاوية الأزرار */
+                .services {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .service-button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .service-button:hover {
+            background: #388E3C;
+            transform: scale(1.05);
+        }
+
+        .service-button i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .service-button:hover i {
+            transform: rotate(360deg);
+        }
+
+        .service-button span {
+            font-size: 1rem;
+        }
+
+        /* تنسيق شاشة الجوال */
+        @media (max-width: 768px) {
+            .service-button {
+                width: 120px;
+                height: 120px;
+                padding: 15px;
+            }
+
+            .service-button i {
+                font-size: 1.5rem;
+            }
+
+            .service-button span {
+                font-size: 0.9rem;
+            }
+        }
+        hr.simple {
+            border: none;
+            height: 2px;
+            background: #4CAF50;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin: 20px 0;
+        }
+        /* تنسيق حاوية المنتجات */
+.product-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 20px 0;
+}
+
+.product-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 10px;
+    padding: 10px;
+    width: calc(100% - 80px); /* ترك مساحة للأزرار */
+    margin: 0 auto;
+}
+
+.product {
+    min-width: 150px;
+    height: 200px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #333;
+    text-align: center;
+}
+
+/* تنسيق أزرار التمرير */
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    z-index: 10;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.scroll-button:hover {
+    background: #388E3C;
+    transform: scale(1.1);
+}
+
+#scroll-left {
+    left: 10px;
+}
+
+#scroll-right {
+    right: 10px;
+}
+
+/* تحسين التمرير للمنتجات */
+.product-list::-webkit-scrollbar {
+    height: 8px;
+}
+
+.product-list::-webkit-scrollbar-thumb {
+    background: #4CAF50;
+    border-radius: 10px;
+}
+
+.product-list::-webkit-scrollbar-track {
+    background: #f4f4f4;
+}
+
+/* تحسين تصميم الشاشة الجوال */
+@media (max-width: 768px) {
+    .product-list {
+        width: calc(100% - 60px); /* تقليل عرض الأزرار للجوّال */
+    }
+
+    .scroll-button {
+        width: 30px;
+        height: 30px;
+        font-size: 1.2rem;
+    }
+}
+/* تنسيق الفوتر */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 10px;
+}
+
+.footer-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 5px;
+    position: relative;
+}
+
+.footer-section p, .footer-section ul {
+    font-size: 0.9rem;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin: 5px 0;
+}
+
+.footer-section ul li a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: #4CAF50;
+}
+
+.social-media {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    color: #fff;
+    font-size: 1.5rem;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.social-icon:hover {
+    color: #4CAF50;
+    transform: scale(1.2);
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+
+/* تحسين تصميم الشاشة الجوال */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+    }
+
+    .footer-section {
+        margin-bottom: 20px;
+    }
+}
+/* تنسيق حاوية أزرار الوسائط الاجتماعية */
+.social-media-container {
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.social-media-container h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* تنسيق الأيقونات الاجتماعية */
+.social-media {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    color: #fff;
+    background-color: #333;
+    border-radius: 50%;
+    transition: background-color 0.3s, transform 0.3s;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    background-color: #4CAF50;
+    transform: scale(1.1);
+}
+
+/* ألوان مخصصة لكل أيقونة */
+.social-icon.facebook { background-color: #3b5998; }
+.social-icon.twitter { background-color: #1da1f2; }
+.social-icon.instagram { background-color: #e1306c; }
+.social-icon.linkedin { background-color: #0077b5; }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-capsules"></i> Prime
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="بحث في المنتجات...">
+            <button id="search-button">بحث</button>
+        </div>
+        <nav class="nav-menu">
+            <a href="الفيتامينات.html">الفيتامينات</a>
+            <a href="#nutrition">التغذية</a>
+            <a href="#personal-care">العناية الشخصية</a>
+            <a href="#skin-care">العناية بالبشرة</a>
+            <a href="#mom-kids">احتياجات الأم والطفل</a>
+            <a href="#health-accessories">الإكسسوارات الصحية</a>
+        </nav>
+        <div class="cart" id="cart-icon">
+            <i class="fas fa-shopping-cart cart-icon"></i>
+            <div class="cart-count" id="cart-count">0</div>
+        </div>
+    </header>
+
+    <!-- نافذة عربة التسوق -->
+    <div class="cart-popup" id="cart-popup">
+        <h2>عربة التسوق</h2>
+        <ul id="cart-items">
+            <!-- العناصر ستضاف هنا بواسطة JavaScript -->
+        </ul>
+        <div class="empty-message" id="empty-message">عربة التسوق فارغة</div>
+        <button id="close-popup">إغلاق</button>
+    </div>
+   <!-- قسم العروض المتحركة -->
+   <section class="offers">
+    <div class="slides">
+        <div class="slide">
+            <img src="https://via.placeholder.com/1200x500?text=عرض+1" alt="عرض 1">
+            <div class="caption">عرض خاص على الفيتامينات!</div>
+        </div>
+        <div class="slide">
+            <img src="https://via.placeholder.com/1200x500?text=عرض+2" alt="عرض 2">
+            <div class="caption">خصومات على المنتجات الغذائية!</div>
+        </div>
+        <div class="slide">
+            <img src="https://via.placeholder.com/1200x500?text=عرض+3" alt="عرض 3">
+            <div class="caption">عروض مذهلة على العناية الشخصية!</div>
+        </div>
+    </div>
+</section>
+<br><br>
+<hr class="simple">
+<br>
+    <!-- حاوية أزرار الخدمات -->
+    <section class="services">
+        <button class="service-button">
+            <i class="fas fa-capsules"></i>
+            <span>الفيتامينات</span>
+        </button>
+        <button class="service-button">
+            <i class="fas fa-apple-alt"></i>
+            <span>التغذية</span>
+        </button>
+        <button class="service-button">
+            <i class="fas fa-heartbeat"></i>
+            <span>العناية الشخصية</span>
+        </button>
+        <button class="service-button">
+            <i class="fas fa-lotion"></i>
+            <span>العناية بالبشرة</span>
+        </button>
+        <button class="service-button">
+            <i class="fas fa-baby"></i>
+            <span>احتياجات الأم والطفل</span>
+        </button>
+        <button class="service-button">
+            <i class="fas fa-medkit"></i>
+            <span>الإكسسوارات الصحية</span>
+        </button>
+    </section>
+    <br><br>
+    <section class="product-container">
+        <button id="scroll-left" class="scroll-button">&larr;</button>
+        <div class="product-list">
+            <!-- توليد 100 منتج -->
+            <!-- يتم إنشاء المنتجات ديناميكياً باستخدام JavaScript في هذا المثال -->
+        </div>
+        <button id="scroll-right" class="scroll-button">&rarr;</button>
+    </section>
+    <br><br>
+    <br><br><br><br><br>
+    <section class="social-media-container"></section>
+        <h2>تابعنا على:</h2>
+        <div class="social-media">
+            <a href="https://www.facebook.com" class="social-icon" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com" class="social-icon" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.instagram.com" class="social-icon" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com" class="social-icon" target="_blank" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+</section>
+<br><br><br><br><br>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h2>معلومات الاتصال</h2>
+                <p>العنوان: شارع الصيدلية، المدينة، الدولة</p>
+                <p>الهاتف: +123 456 7890</p>
+                <p>البريد الإلكتروني: info@pharmacy.com</p>
+            </div>
+            <div class="footer-section">
+                <h2>روابط مهمة</h2>
+                <ul>
+                    <li><a href="#">الصفحة الرئيسية</a></li>
+                    <li><a href="#">عن الصيدلية</a></li>
+                    <li><a href="#">المنتجات</a></li>
+                    <li><a href="#">التواصل معنا</a></li>
+                    <li><a href="#">الأسئلة الشائعة</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h2>تواصل معنا</h2>
+                <div class="social-media">
+                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h2>معلومات عن الصيدلية</h2>
+                <p>نحن صيدلية رائدة في تقديم الأدوية والمنتجات الصحية بجودة عالية وخدمة ممتازة.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025</p>
+        </div>
+    </footer>
+    <script>
+        // بيانات افتراضية لعربة التسوق
+        const cartItems = [
+            { name: 'فيتامين C', price: '10.00 ريال' },
+            { name: 'مسكن ألم', price: '15.00 ريال' },
+            // أضف المزيد من العناصر هنا
+        ];
+
+        const cartIcon = document.getElementById('cart-icon');
+        const cartPopup = document.getElementById('cart-popup');
+        const cartItemsList = document.getElementById('cart-items');
+        const emptyMessage = document.getElementById('empty-message');
+        const closePopupButton = document.getElementById('close-popup');
+
+        function updateCartPopup() {
+            // عرض نافذة عربة التسوق
+            cartPopup.style.display = 'block';
+
+            // عرض العناصر في عربة التسوق
+            if (cartItems.length > 0) {
+                emptyMessage.style.display = 'none';
+                cartItemsList.innerHTML = cartItems.map(item => `
+                    <li>${item.name} - ${item.price}</li>
+                `).join('');
+            } else {
+                cartItemsList.innerHTML = '';
+                emptyMessage.style.display = 'block';
+            }
+        }
+
+        // عرض عربة التسوق عند النقر على الأيقونة
+        cartIcon.addEventListener('click', function() {
+            updateCartPopup();
+        });
+
+        // إغلاق نافذة عربة التسوق عند النقر على زر الإغلاق
+        closePopupButton.addEventListener('click', function() {
+            cartPopup.style.display = 'none';
+        });
+
+        // تحديث عدد العناصر في العربة
+        document.getElementById('cart-count').innerText = cartItems.length;
+        const slides = document.querySelector('.slides');
+        const slideCount = document.querySelectorAll('.slide').length;
+        let currentIndex = 0;
+
+        function showNextSlide() {
+            currentIndex = (currentIndex + 1) % slideCount;
+            const offset = -currentIndex * 100;
+            slides.style.transform = `translateX(${offset}%)`;
+        }
+
+        setInterval(showNextSlide, 5000); // تغيير العرض كل 5 ثوان
+        document.addEventListener('DOMContentLoaded', function() {
+    const productList = document.querySelector('.product-list');
+    const scrollLeftButton = document.getElementById('scroll-left');
+    const scrollRightButton = document.getElementById('scroll-right');
+
+    // إنشاء 100 منتج ديناميكياً
+    for (let i = 1; i <= 100; i++) {
+        const product = document.createElement('div');
+        product.classList.add('product');
+        product.textContent = `منتج ${i}`;
+        productList.appendChild(product);
+    }
+
+    // وظيفة التمرير الأفقى
+    function scrollBy(amount) {
+        productList.scrollBy({
+            left: amount,
+            behavior: 'smooth'
+        });
+    }
+
+    scrollLeftButton.addEventListener('click', function() {
+        scrollBy(-200); // تمرير لليسار
+    });
+
+    scrollRightButton.addEventListener('click', function() {
+        scrollBy(200); // تمرير لليمين
+    });
+});
+// تأثيرات متحركة إضافية يمكن إضافتها هنا إذا لزم الأمر
+document.addEventListener('DOMContentLoaded', function() {
+    // يمكن إضافة تأثيرات تفاعلية أخرى إذا لزم الأمر
+});
+
+    </script>
+</body>
+</html>
